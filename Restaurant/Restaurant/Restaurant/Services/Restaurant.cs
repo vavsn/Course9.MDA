@@ -1,11 +1,13 @@
 ﻿
+using Messaging;
 using Restaurants.Services;
 
 public class Restaurant
 {
     private readonly List<Table> _tables = new();
     private Messages _message = new();
-
+    private readonly Producer _producer =
+        new("BookingNotification", "localhost");
     public Restaurant()
     { 
         for (ushort i =1; i <= 10;i++)
@@ -16,21 +18,21 @@ public class Restaurant
 
     public void BookFreeTable(int countOfPerson)
     {
-        _message.ShowMessage("Добрый день! Подождите секунду, я подберу Вам столик и подтвержу Вашу бронь. Оставайтесь на линии.");
+        _producer.Send("Добрый день! Подождите секунду, я подберу Вам столик и подтвержу Вашу бронь. Оставайтесь на линии.");
 
         var table = _tables.FirstOrDefault(t => t.SeatsCount >= countOfPerson 
                         && t.State == State.Free);
 
         table?.SetState(State.Booked);
 
-        _message.ShowMessage(table is null
+        _producer.Send(table is null
             ? $"К сожалению, все столики сейчас заняты"
             : $"Готово! Ваш столик номер {table.Id}");
     }
 
     public void BookFreeTableAsync(int countOfPerson)
     {
-        _message.ShowMessage("Добрый день! Подождите секунду, я подберу Вам столик и подтвержу Вашу бронь. Вам придет уведомление.");
+        _producer.Send("Добрый день! Подождите секунду, я подберу Вам столик и подтвержу Вашу бронь. Вам придет уведомление.");
 
         Task.Run(async () =>
         {
@@ -40,7 +42,7 @@ public class Restaurant
             await Task.Delay(1);
             table?.SetState(State.Booked);
 
-            _message.ShowMessage(table is null
+            _producer.Send(table is null
                 ? $"УВЕДОМЛЕНИЕ: К сожалению, все столики сейчас заняты"
                 : $"УВЕДОМЛЕНИЕ: Готово! Ваш столик номер {table.Id}");
         });
@@ -50,18 +52,18 @@ public class Restaurant
 
     public void FreeBookTable(int idTable)
     {
-        _message.ShowMessage("Подождите секунду, я бронь с указанного Вами столика.");
+        _producer.Send("Подождите секунду, я бронь с указанного Вами столика.");
 
         var table = _tables.FirstOrDefault(t => t.SeatsCount >= idTable);
 
         table?.SetState(State.Free);
 
-        _message.ShowMessage($"Готово! Со столика номер {table.Id} бронь снята");
+        _producer.Send($"Готово! Со столика номер {table.Id} бронь снята");
     }
 
     public void FreeBookTableAsync(int idTable)
     {
-        _message.ShowMessage("Подождите секунду, я бронь с указанного Вами столика. Вам придет уведомление.");
+        _producer.Send("Подождите секунду, я бронь с указанного Вами столика. Вам придет уведомление.");
 
         Task.Run(async () =>
         {
@@ -70,7 +72,7 @@ public class Restaurant
             await Task.Delay(1);
             table?.SetState(State.Free);
 
-            _message.ShowMessage($"УВЕДОМЛЕНИЕ: Со столика номер {table.Id} бронь снята");
+            _producer.Send($"УВЕДОМЛЕНИЕ: Со столика номер {table.Id} бронь снята");
         });
     }
 
@@ -85,7 +87,7 @@ public class Restaurant
 
             await Task.Delay(1);
 
-            _message.ShowMessage("УВЕДОМЛЕНИЕ: Проведено автоматическое снятие бронирования столов");
+            _producer.Send("УВЕДОМЛЕНИЕ: Проведено автоматическое снятие бронирования столов");
         });
     }
 
