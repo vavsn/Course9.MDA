@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
+using System;
+using GreenPipes;
 using MassTransit;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Restaurant.Notification.Consumers;
 
 namespace Restaurant.Notification
@@ -14,17 +15,16 @@ namespace Restaurant.Notification
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    // 25.10.2022
                     services.AddMassTransit(x =>
                     {
-                        x.AddConsumer<NotifierTableBookedConsumer>();
-                        x.AddConsumer<KitchenReadyConsumer>();
-
-                        x.UsingRabbitMq((context, cfg) =>
+                        x.AddConsumer<NotifyConsumer>()
+                            .Endpoint(e => e.Temporary = true);
+                        
+                        x.UsingRabbitMq((context,cfg) =>
                         {
                             cfg.UseMessageRetry(r =>
                             {
@@ -35,23 +35,14 @@ namespace Restaurant.Notification
                                 r.Ignore<StackOverflowException>();
                                 r.Ignore<ArgumentNullException>(x => x.Message.Contains("Consumer"));
                             });
-
-
+                            
+                            
                             cfg.ConfigureEndpoints(context);
                         });
-
-
-
                     });
+                    
                     services.AddSingleton<Notifier>();
                     services.AddMassTransitHostedService(true);
-
-
-// 25.10.2022
-                    services.AddHostedService<Worker>();
-
-
-
                 });
     }
 }
