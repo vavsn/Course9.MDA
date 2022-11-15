@@ -1,5 +1,0 @@
-D:\Learning c#\Course 10. MDA\Lesson 4\Lesson 4\Restaurant.Booking\obj\Debug\net6.0\Restaurant.Booking.csproj.AssemblyReference.cache
-D:\Learning c#\Course 10. MDA\Lesson 4\Lesson 4\Restaurant.Booking\obj\Debug\net6.0\Restaurant.Booking.GeneratedMSBuildEditorConfig.editorconfig
-D:\Learning c#\Course 10. MDA\Lesson 4\Lesson 4\Restaurant.Booking\obj\Debug\net6.0\Restaurant.Booking.AssemblyInfoInputs.cache
-D:\Learning c#\Course 10. MDA\Lesson 4\Lesson 4\Restaurant.Booking\obj\Debug\net6.0\Restaurant.Booking.AssemblyInfo.cs
-D:\Learning c#\Course 10. MDA\Lesson 4\Lesson 4\Restaurant.Booking\obj\Debug\net6.0\Restaurant.Booking.csproj.CoreCompileInputs.cache

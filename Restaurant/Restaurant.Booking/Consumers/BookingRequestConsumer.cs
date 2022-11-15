@@ -6,7 +6,7 @@ using Restaurant.Messages;
 
 namespace Restaurant.Booking.Consumers
 {
-    public class RestaurantBookingRequestConsumer : IConsumer<IBookingRequest>
+    public class RestaurantBookingRequestConsumer : IConsumer<Fault<IBookingRequest>>
     {
         private readonly Restaurant _restaurant;
 
@@ -15,12 +15,12 @@ namespace Restaurant.Booking.Consumers
             _restaurant = restaurant;
         }
 
-        public async Task Consume(ConsumeContext<IBookingRequest> context)
+        public async Task Consume(ConsumeContext<Fault<IBookingRequest>> context)
         {
-            Console.WriteLine($"[OrderId: {context.Message.OrderId}]");
+            Console.WriteLine($"[OrderId: {context.Message.Message.OrderId}]");
             var result = await _restaurant.BookFreeTableAsync(1);
             
-            await context.Publish<ITableBooked>(new TableBooked(context.Message.OrderId, result ?? false));
+            await context.Publish<ITableBooked>(new TableBooked(context.Message.Message.OrderId, result ?? false));
         }
     }
 }
