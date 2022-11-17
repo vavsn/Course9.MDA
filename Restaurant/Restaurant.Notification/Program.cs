@@ -1,5 +1,4 @@
 using System;
-using GreenPipes;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,8 +20,7 @@ namespace Restaurant.Notification
                 {
                     services.AddMassTransit(x =>
                     {
-                        x.AddConsumer<NotifyConsumer>()
-                            .Endpoint(e => e.Temporary = true);
+                        x.AddConsumer<NotifyConsumer>();
                         
                         x.UsingRabbitMq((context,cfg) =>
                         {
@@ -42,7 +40,6 @@ namespace Restaurant.Notification
                     });
                     
                     services.AddSingleton<Notifier>();
-                    services.AddMassTransitHostedService(true);
                 });
     }
 }

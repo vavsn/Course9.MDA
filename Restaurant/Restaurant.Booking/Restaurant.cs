@@ -24,7 +24,7 @@ namespace Restaurant.Booking
 
             var table = _tables.FirstOrDefault(t => t.SeatsCount > countOfPersons
                                                         && t.State == TableState.Free);
-           // await Task.Delay(100 * 5); //у нас нерасторопные менеджеры, 5 секунд они находятся в поисках стола
+            await Task.Delay(100 * 5); //у нас нерасторопные менеджеры, 5 секунд они находятся в поисках стола
             return table?.SetState(TableState.Booked);
         }
     }
